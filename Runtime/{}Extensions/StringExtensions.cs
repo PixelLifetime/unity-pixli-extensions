@@ -1,0 +1,181 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Text;
+using System.Globalization;
+using System.Runtime.CompilerServices;
+
+using UnityEngine;
+using System.IO;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
+public static class StringExtensions
+{
+	#region Color
+	public static string SetColor(this string value, Color color)
+	{
+		return string.Format("<color={0}>{1}</color>", ColorUtility.ToHtmlStringRGBA(color), value);
+	}
+
+	public static string SetColor(this string value, string color)
+	{
+		return string.Format("<color={0}>{1}</color>", color, value);
+	}
+	#endregion
+
+	#region Enum
+	public static TEnum ToEnum<TEnum>(this string value, bool ignoreCase = true)
+		where TEnum : struct, IComparable, IFormattable, IConvertible
+	{
+		return (TEnum)Enum.Parse(typeof(TEnum), value, ignoreCase);
+	}
+
+	public static TEnum ToEnum<TEnum>(this string value, TEnum defaultValue, bool ignoreCase = true)
+		where TEnum : struct, IComparable, IFormattable, IConvertible
+	{
+		if (string.IsNullOrEmpty(value))
+			return defaultValue;
+
+		Array enumValues = Enum.GetValues(typeof(TEnum));
+
+		if (ignoreCase)
+		{
+			value = value.ToLower();
+
+			for (int i = 0; i < enumValues.Length; i++)
+				if (enumValues.GetValue(i).ToString().ToLower().Equals(value))
+					return (TEnum)enumValues.GetValue(i);
+		}
+		else
+			for (int i = 0; i < enumValues.Length; i++)
+				if (enumValues.GetValue(i).ToString().Equals(value))
+					return (TEnum)enumValues.GetValue(i);
+
+		return defaultValue;
+	}
+	#endregion
+
+	#region Miscellaneous
+	public readonly static IReadOnlyCollection<char> INVALID_FILE_NAME_CHARACTERS = Path.GetInvalidFileNameChars();
+
+	public static string Replace(this string @string, string[] separators, string newValue) => 
+		String.Join(newValue, @string.Split(separators, StringSplitOptions.RemoveEmptyEntries));
+
+	public static string Replace(this string @string, char[] separators, string newValue) =>
+		String.Join(newValue, @string.Split(separators, StringSplitOptions.RemoveEmptyEntries));
+
+	public static string ToValidFileName(this string @string)
+	{
+		if (string.IsNullOrEmpty(@string))
+			return @string;
+
+		return @string.Replace((char[])INVALID_FILE_NAME_CHARACTERS, "");
+	}
+
+	public static string ToValidClassName(this string @string)
+	{
+		if (string.IsNullOrEmpty(@string))
+			return @string;
+
+		List<char> separators = new List<char>(INVALID_FILE_NAME_CHARACTERS);
+		separators.AddRange(new char[] { '[', ']', ' ', '{', '}', '(', ')' });
+
+		return @string.Replace(separators.ToArray(), "");
+	}
+
+	/// <summary>
+	/// Converts the specified string to title case (except for words that are entirely in upper-case, which are considered to be acronyms).
+	/// Converts each character after whitespace to uppercase while converting other characters of the word to lower-case.
+	/// </summary>
+	/// <param name="value"></param>
+	/// <returns></returns>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static string ToTitleCase(this string value) => CultureInfo.CurrentCulture.TextInfo.ToTitleCase(value);
+
+	/// <summary>
+	/// Converts each character after whitespace to upper-case without modifying anything else.
+	/// </summary>
+	/// <param name="value"></param>
+	/// <returns></returns>
+	public static string ToTitleCaseUnmodified(this string value)
+	{
+		char[] characters = value.ToCharArray();
+
+		if (characters.Length > 0)
+		{
+			if (!char.IsWhiteSpace(characters[0]))
+				characters[0] = char.ToUpper(characters[0]);
+		}
+		else
+			return value;
+
+		for (int a = 1; a < characters.Length; a++)
+		{
+			if (char.IsWhiteSpace(characters[a - 1]) && !char.IsWhiteSpace(characters[a]))
+				characters[a] = char.ToUpper(characters[a]);
+		}
+
+		return new string(characters);
+	}
+
+	/// <summary>
+	/// Adds space before each (C)apital letter except first one.
+	/// </summary>
+	/// <param name="value"></param>
+	/// <returns></returns>
+	public static string ToDisplayValue(this string value)
+	{
+		if (string.IsNullOrEmpty(value))
+			return value;
+
+		StringBuilder stringBuilder = new StringBuilder(value.Length * 2);
+
+		stringBuilder.Append(value[0]);
+
+		for (int i = 1; i < value.Length; i++)
+		{
+			if (char.IsUpper(value[i]) && value[i - 1] != ' ')
+				stringBuilder.Append(' ');
+			stringBuilder.Append(value[i]);
+		}
+
+		return stringBuilder.ToString();
+	}
+
+	/// <summary>
+	/// Adds space before each (C)apital letter except first one.
+	/// Adds a stylized tag in front while stripping characters from the end.
+	/// </summary>
+	/// <param name="value"></param>
+	/// <param name="tag"></param>
+	/// <param name="stripLengthEnd"></param>
+	/// <returns></returns>
+	public static string ToTaggedDisplayValue(this string value, string tag, int stripLengthEnd)
+	{
+		StringBuilder stringBuilder = new StringBuilder(value.Length);
+
+		stringBuilder.Append("[");
+		stringBuilder.Append(tag);
+		stringBuilder.Append("] ");
+
+		if (value.EndsWith(tag))
+			stringBuilder.Append(value.Remove(value.Length - stripLengthEnd).ToDisplayValue());
+		else
+			stringBuilder.Append(value.ToDisplayValue());
+
+		return stringBuilder.ToString();
+	}
+
+	/// <summary>
+	/// Adds space before each (C)apital letter except first one.
+	/// Adds a stylized tag in front while removing it from the end.
+	/// </summary>
+	/// <param name="value"></param>
+	/// <param name="tag"></param>
+	/// <returns></returns>
+	public static string ToTaggedDisplayValue(this string value, string tag) => value.ToTaggedDisplayValue(tag, tag.Length);
+	#endregion
+}
