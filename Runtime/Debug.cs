@@ -15,7 +15,7 @@ using UnityEditor;
 using Object = UnityEngine.Object;
 using UDebug = UnityEngine.Debug;
 
-namespace PixLi
+namespace PixLi.Debugging
 {
 	public class Debug : ILogger
 	{
