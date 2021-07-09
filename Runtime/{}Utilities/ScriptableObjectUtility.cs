@@ -179,11 +179,37 @@ public static class ScriptableObjectUtility
 	public static T GetChildAsset<T>(ScriptableObject scriptableObject, string name)
 		where T : ScriptableObject
 	{
-		T childAsset = AssetDatabase.LoadAssetAtPath<T>(
-			Path.Combine(AssetDatabase.GetAssetPath(scriptableObject.GetInstanceID()), name)
+		//T childAsset = AssetDatabase.LoadAssetAtPath<T>(
+		//	Path.Combine(Path.ChangeExtension(
+		//			path: AssetDatabase.GetAssetPath(scriptableObject.GetInstanceID()),
+		//			extension: null
+		//		),
+		//		$"{name}.asset"
+		//	)
+		//);
+
+		//Debug.LogWarning(
+		//	Path.Combine(Path.ChangeExtension(
+		//			path: AssetDatabase.GetAssetPath(scriptableObject.GetInstanceID()),
+		//			extension: null
+		//		),
+		//		$"{name}.asset"
+		//	)
+		//);
+
+		//return childAsset;
+
+		Object[] childrenAssets = AssetDatabase.LoadAllAssetRepresentationsAtPath(
+			AssetDatabase.GetAssetPath(scriptableObject.GetInstanceID())
 		);
 
-		return childAsset;
+		for (int a = 0; a < childrenAssets.Length; a++)
+		{
+			if (childrenAssets[a] is T child && child.name == name)
+				return child;
+		}
+
+		return null;
 	}
 
 	public static T GetChildAsset<T>(ScriptableObject scriptableObject)
