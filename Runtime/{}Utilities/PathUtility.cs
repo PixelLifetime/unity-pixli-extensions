@@ -22,6 +22,8 @@ public static class PathUtility
 	public const string SPECIFIC_PATH_NAME = "#_Specific";
 	public const string SPECIFIC_RELATIVE_PATH = "Assets/#_Specific";
 
+	public const string AUTO_GENERATED_DIRECTORY_NAME = "^Auto-Generated DO NOT DELETE";
+
 #if UNITY_EDITOR
 	/// <summary>
 	/// 

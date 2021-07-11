@@ -16,6 +16,7 @@ public static class SceneManagerUtility
 {
 	public static string GetSceneNameFromBuildIndex(int buildIndex) => Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(buildIndex));
 
+#if UNITY_EDITOR
 	public static int GetSceneBuildIndex(SceneAsset sceneAsset)
 	{
 		for (int a = 0; a < SceneManager.sceneCountInBuildSettings; a++)
@@ -26,6 +27,5 @@ public static class SceneManagerUtility
 
 		return -1;
 	}
-#if UNITY_EDITOR
 #endif
 }

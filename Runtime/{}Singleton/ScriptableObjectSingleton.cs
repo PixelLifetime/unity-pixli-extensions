@@ -15,13 +15,18 @@ using UnityEditor;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
+using PixLi;
+
 #if UNITY_EDITOR
 [InitializeOnLoad]
+#endif
 public class ScriptableObjectSingleton<T> : ScriptableObject
 	where T : ScriptableObjectSingleton<T>
 {
+#if UNITY_EDITOR
 	//[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	protected virtual string GetInstanceDirectoryPath() => PathUtility.GetScriptFileDirectoryPath();
+#endif
 
 	private static T s_instance;
 	public static T _Instance
@@ -30,60 +35,49 @@ public class ScriptableObjectSingleton<T> : ScriptableObject
 		{
 			if (s_instance == null)
 			{
-				T temporaryInstance = ScriptableObject.CreateInstance<T>();
+				s_instance = Container._Instance.Resolve<T>();
 
-				s_instance = AssetDatabaseUtility.LoadAssetOfType<T>(
-					temporaryInstance.GetInstanceDirectoryPath(),
-					".asset"
-				);
-				
-				//? Loading of instance by name is a bad idea. When reference to the script is lost - it starts to recreate the asset every time with different name.
-				// s_instance = AssetDatabase.LoadAssetAtPath<T>(
-				// 	Path.Combine(
-				// 		temporaryInstance.GetInstanceDirectoryPath(),
-				// 		$"[{typeof(T).Name.ToDisplayValue()}] Default.asset"
-				// 	)
-				// );
-
+#if UNITY_EDITOR
 				if (s_instance == null)
 				{
-					s_instance = ScriptableObjectUtility.CreateAsset<T>(
-						path: temporaryInstance.GetInstanceDirectoryPath(),
-						name: $"[{typeof(T).Name.ToDisplayValue()}]"
-					);
-				}
+					T temporaryInstance = ScriptableObject.CreateInstance<T>();
 
-				// Dispose of temporary ScriptableObject.
-#if UNITY_EDITOR
-				if (!EditorApplication.isPlaying)
-					Object.DestroyImmediate(temporaryInstance);
-				else
+					s_instance = AssetDatabaseUtility.LoadAssetOfType<T>(
+						temporaryInstance.GetInstanceDirectoryPath(),
+						".asset"
+					);
+
+					if (s_instance == null)
+					{
+						s_instance = ScriptableObjectUtility.CreateAsset<T>(
+							path: temporaryInstance.GetInstanceDirectoryPath(),
+							name: $"[{typeof(T).Name.ToDisplayValue()}]"
+						);
+					}
+
+					Container._Instance.Register(s_instance);
+
+					// Dispose of temporary ScriptableObject.
+					if (!EditorApplication.isPlaying)
+						Object.DestroyImmediate(temporaryInstance);
+					else
+						Object.Destroy(temporaryInstance);
+				}
 #endif
-					Object.Destroy(temporaryInstance);
 			}
 
 			return s_instance;
-
-			//return s_instance ??
-			//	(s_instance = AssetDatabase.LoadAssetAtPath<T>(
-			//		Path.Combine(
-			//			ScriptableObject.CreateInstance<T>().GetInstanceDirectoryPath(),
-			//			$"[{typeof(T).Name}] Default.asset"
-			//		))) ??
-			//	(s_instance = ScriptableObjectUtility.CreateAsset<T>(
-			//		path: ScriptableObject.CreateInstance<T>().GetInstanceDirectoryPath(),
-			//		name: $"[{typeof(T).Name}] Default")
-			//	);
 		}
 	}
 
+#if UNITY_EDITOR
 	static ScriptableObjectSingleton()
 	{
 		EditorApplication.delayCall += () =>
 		{
 			if (_Instance == null)
-				Debug.LogError($"Couldn't create instance of {typeof(T)}.");	
+				Debug.LogError($"Couldn't get or create instance of {typeof(T)}.");	
 		};
 	}
-}
 #endif
+}
