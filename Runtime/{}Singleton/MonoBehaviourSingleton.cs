@@ -1,5 +1,4 @@
-﻿/* Created by Max.K.Kimo */
-
+﻿
 using System.Collections;
 using System.Collections.Generic;
 
