@@ -22,33 +22,33 @@ public static class EditorStateUtility
 
 	private static void OnPlaymodeStateChanged(PlayModeStateChange playModeStateChange)
 	{
-		//switch (playModeStateChange)
-		//{
-		//	case PlayModeStateChange.EnteredEditMode:
+		switch (playModeStateChange)
+		{
+			case PlayModeStateChange.EnteredEditMode:
 
-		//		if (EditorStateUtility.OnEnteredEditMode != null)
-		//			EditorStateUtility.OnEnteredEditMode.Invoke();
+				if (EditorStateUtility.OnEnteredEditMode != null)
+					EditorStateUtility.OnEnteredEditMode.Invoke();
 
-		//		break;
-		//	case PlayModeStateChange.ExitingEditMode:
+				break;
+			case PlayModeStateChange.ExitingEditMode:
 
-		//		if (EditorStateUtility.OnExitingEditMode != null)
-		//			EditorStateUtility.OnExitingEditMode.Invoke();
+				if (EditorStateUtility.OnExitingEditMode != null)
+					EditorStateUtility.OnExitingEditMode.Invoke();
 
-		//		break;
-		//	case PlayModeStateChange.EnteredPlayMode:
+				break;
+			case PlayModeStateChange.EnteredPlayMode:
 
-		//		if (EditorStateUtility.OnEnteredPlayMode != null)
-		//			EditorStateUtility.OnEnteredPlayMode.Invoke();
+				if (EditorStateUtility.OnEnteredPlayMode != null)
+					EditorStateUtility.OnEnteredPlayMode.Invoke();
 
-		//		break;
-		//	case PlayModeStateChange.ExitingPlayMode:
+				break;
+			case PlayModeStateChange.ExitingPlayMode:
 
-		//		if (EditorStateUtility.OnExitingPlayMode != null)
-		//			EditorStateUtility.OnExitingPlayMode.Invoke();
+				if (EditorStateUtility.OnExitingPlayMode != null)
+					EditorStateUtility.OnExitingPlayMode.Invoke();
 
-		//		break;
-		//}
+				break;
+		}
 
 		//switch (playModeStateChange)
 		//{
@@ -92,8 +92,8 @@ public static class EditorStateUtility
 
 	static EditorStateUtility()
 	{
-		//EditorApplication.playModeStateChanged -= EditorStateUtility.OnPlaymodeStateChanged;
-		//EditorApplication.playModeStateChanged += EditorStateUtility.OnPlaymodeStateChanged;
+		EditorApplication.playModeStateChanged -= EditorStateUtility.OnPlaymodeStateChanged;
+		EditorApplication.playModeStateChanged += EditorStateUtility.OnPlaymodeStateChanged;
 
 		//BuildTargetGroup buildTargetGroup = BuildTargetGroup.Standalone | BuildTargetGroup.Android | BuildTargetGroup.iOS;
 

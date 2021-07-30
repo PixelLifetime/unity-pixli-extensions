@@ -50,15 +50,15 @@ public class EditorAssetModificationProcessor : UnityEditor.AssetModificationPro
 	/// <param name="asset"></param>
 	/// <param name="removeAssetOptions"></param>
 	/// <returns></returns>
-	private static AssetDeleteResult OnWillDeleteAsset(string asset, RemoveAssetOptions removeAssetOptions)
-	{
-		int assetInstanceID = AssetDatabase.LoadAssetAtPath<Object>(asset).GetInstanceID();
+	//private static AssetDeleteResult OnWillDeleteAsset(string asset, RemoveAssetOptions removeAssetOptions)
+	//{
+	//	int assetInstanceID = AssetDatabase.LoadAssetAtPath<Object>(asset).GetInstanceID();
 
-		if (S_LockedFilePaths.Contains(assetInstanceID))
-			return AssetDeleteResult.FailedDelete;
+	//	if (S_LockedFilePaths.Contains(assetInstanceID))
+	//		return AssetDeleteResult.FailedDelete;
 
-		return default;
-	}
+	//	return default;
+	//}
 
 	///// <summary>
 	///// Unity calls this method when it is about to move an Asset on disk.

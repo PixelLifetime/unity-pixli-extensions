@@ -107,7 +107,7 @@ public class MonoBehaviourSingletonEmbedded<T>
 		if (Instance_ == null)
 		{
 			Instance_ = creator;
-			Instance_.transform.SetParent(null);
+			//Instance_.transform.SetParent(null);
 
 			//Transform rootTransform = Instance_.transform;
 
