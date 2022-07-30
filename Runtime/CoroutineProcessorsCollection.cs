@@ -72,6 +72,26 @@ public static class CoroutineProcessorsCollection
 	public static IEnumerator InvokeIndefinitely(CustomYieldInstruction customYieldInstruction, Action action) =>
 		CoroutineProcessorsCollection.InvokeIndefinitelyInline(customYieldInstruction, action);
 
+	//TODO: Rename it.
+	public static IEnumerator InvokeEachFrameWithProgressIndefinitely(float speed, Action<float> action)
+	{
+		while (true)
+		{
+			float t = 0;
+
+			while (t <= 1.0f)
+			{
+				action.Invoke(t);
+
+				yield return null;
+
+				t += speed * Time.deltaTime;
+			}
+
+			action.Invoke(t);
+		}
+	}
+
 #if UNITY_EDITOR
 #endif
 }

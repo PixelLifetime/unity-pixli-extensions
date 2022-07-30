@@ -31,8 +31,7 @@ public static class PathUtility
 	/// <param name="fullPath"></param>
 	/// <returns></returns>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static string GetRelativePath(string fullPath) => 
-		Path.Combine(PathUtility.ASSETS_PATH_NAME, fullPath.Substring(Application.dataPath.Length + 1));
+	public static string GetRelativePath(string fullPath) => fullPath.Substring(Application.dataPath.Length + 1);
 
 	/// <summary>
 	/// Get relative path to the file where call to this function happens.

@@ -16,7 +16,6 @@ using Random = UnityEngine.Random;
 public static class ArrayExtensions
 {
 	public static bool Contains<T>(this T[] array, T value)
-		where T : IEquatable<T>
 	{
 		for (int a = 0; a < array.Length; a++)
 		{
@@ -34,5 +33,13 @@ public static class ArrayExtensions
 
 		for (int a = 0; a < steps; a++)
 			array[a] = default;
+	}
+
+	public static void DebugLogArray<T>(this T[] array)
+	{
+		for (int a = 0; a < array.Length; a++)
+		{
+			Debug.Log($"[{a}]{array[a]}");
+		}
 	}
 }

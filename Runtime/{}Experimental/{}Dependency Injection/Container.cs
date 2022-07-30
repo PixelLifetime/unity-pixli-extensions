@@ -14,6 +14,7 @@ namespace PixLi
 #if UNITY_EDITOR
 	//[InitializeOnLoad]
 #endif
+	//? This is not a `ScriptableObjectSingleton<Container>` because it's loaded from resources and creates infinite loop if it tries to `Resolve<>` itself.
 	[CreateAssetMenu(fileName = "[Container]", menuName = "[Dependency Injection]/[Container]")]
 	public class Container : ScriptableObject
 	{

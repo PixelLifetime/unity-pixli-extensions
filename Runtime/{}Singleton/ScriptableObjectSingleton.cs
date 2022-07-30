@@ -43,18 +43,20 @@ public class ScriptableObjectSingleton<T> : ScriptableObject
 					T temporaryInstance = ScriptableObject.CreateInstance<T>();
 
 					s_instance = AssetDatabaseUtility.LoadAssetOfType<T>(
-						temporaryInstance.GetInstanceDirectoryPath(),
+						Path.Combine(PathUtility.ASSETS_PATH_NAME, temporaryInstance.GetInstanceDirectoryPath()),
 						".asset"
 					);
 
 					if (s_instance == null)
 					{
+						string instanceDirectoryPath = temporaryInstance.GetInstanceDirectoryPath();
+
 						s_instance = ScriptableObjectUtility.CreateAsset<T>(
-							path: temporaryInstance.GetInstanceDirectoryPath(),
+							path: Path.Combine(PathUtility.ASSETS_PATH_NAME, instanceDirectoryPath),
 							name: $"[{typeof(T).Name.ToDisplayValue()}]"
 						);
 					}
-
+					
 					Container._Instance.Register(s_instance);
 
 					// Dispose of temporary ScriptableObject.
