@@ -42,4 +42,7 @@ public static class ArrayExtensions
 			Debug.Log($"[{a}]{array[a]}");
 		}
 	}
+
+	public static T Random<T>(this T[] array, System.Random random) => array[random.Next(0, array.Length)];
+	public static T Random<T>(this T[] array) => array.Random<T>(random: PixLi.RandomDistribution.Random._GlobalRandom);
 }
